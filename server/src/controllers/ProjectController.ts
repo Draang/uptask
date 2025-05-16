@@ -8,7 +8,7 @@ export class ProjectController {
 
       response.send("projecto creado correctamente");
     } catch (error) {
-      console.error(error);
+     response.status(500).json({error:error.message})
     }
   }
   static async getAllProjects(request: Request, response: Response) {
@@ -16,7 +16,7 @@ export class ProjectController {
       const projects = await Project.find({});
       response.json(projects);
     } catch (error) {
-      console.error(error);
+      response.status(500).json({error:error.message})
     }
   }
   static async getProjectById(request: Request, response: Response) {
@@ -29,7 +29,7 @@ export class ProjectController {
       }
       response.json(project);
     } catch (error) {
-      console.error(error);
+      response.status(500).json({error:error.message})
     }
   }
   static async updateProject(request: Request, response: Response) {
@@ -42,7 +42,7 @@ export class ProjectController {
       }
       response.send("Proyecto actualizado");
     } catch (error) {
-      console.error(error);
+      response.status(500).json({error:error.message})
     }
   }
 
@@ -55,7 +55,7 @@ export class ProjectController {
       }
       response.send(`proyecto ${project.projectName} eliminado`);
     } catch (error) {
-      console.error(error);
+     response.status(500).json({error:error.message})
     }
   }
 }
