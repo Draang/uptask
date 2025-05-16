@@ -1,5 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProjectForm from "@/components/projects/ProjectForm";
 import type { ProjectFormData } from "@/types/index";
 import { createProject } from "@/api/projectApi";
@@ -15,9 +15,11 @@ export default function CreateProjectView() {
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
+  const navigate = useNavigate();
 
-  const handleForm: SubmitHandler<ProjectFormData> = (data) => {
-    createProject(data);
+  const handleForm: SubmitHandler<ProjectFormData> = async (data) => {
+    await createProject(data);
+    navigate("/");
   };
   return (
     <>
