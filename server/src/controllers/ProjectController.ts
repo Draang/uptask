@@ -6,7 +6,10 @@ export class ProjectController {
     try {
       const projectSave = await project.save();
 
-      response.send("projecto creado correctamente");
+      response.json({
+        message:"Proyecto creado correctamente",
+        id: projectSave._id
+      })
     } catch (error) {
      response.status(500).json({error:error.message})
     }
