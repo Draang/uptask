@@ -65,3 +65,14 @@ export async function updateProjectById({
     throw new Error("Error en respuesta");
   }
 }
+export async function deleteProject(projectId: Project["_id"]) {
+  try {
+    const { data } = await api.delete(`/projects/${projectId}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error("Error en respuesta");
+  }
+}
