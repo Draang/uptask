@@ -11,7 +11,7 @@ export class TaskController {
       });
       request.project.tasks.push(task.id);
       await Promise.allSettled([task.save(), request.project.save()]);
-      response.json(task);
+      response.json({ message: "Tarea creada", data: task });
     } catch (error) {
       console.error(error);
     }

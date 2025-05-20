@@ -2,12 +2,18 @@ import { getProjectById } from "@/api/projectApi";
 import Spinner from "@/components/Spinner";
 import AddTaskModal from "@/components/tasks/AddTaskModal";
 import { useQuery } from "@tanstack/react-query";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 export default function ProjectDetailView() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const params = useParams();
   const projectId = params.projectId!;
-  const navigate = useNavigate();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["getProject", projectId],
     queryFn: () => getProjectById(projectId),
@@ -27,12 +33,12 @@ export default function ProjectDetailView() {
           <button
             type="button"
             className="bg-purple-400 hover:bg-purple-500 px-10 py-3 text-white cursor-pointer font-bold transition-colors"
-            onClick={() => navigate("?newTask=true")}
+            onClick={() => navigate(location.pathname + "?newTask=true")}
           >
             Agregar Tarea
           </button>
         </nav>
-        <AddTaskModal />
+        <AddTaskModal projectId={projectId} />
       </>
     );
 }
