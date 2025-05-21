@@ -1,6 +1,7 @@
 import type { Task } from "@/types/index";
 import TaskCard from "./TaskCard";
 
+
 type TaskListProps = {
   tasks: Task[];
 };
@@ -37,6 +38,7 @@ export default function TaskList({ tasks }: TaskListProps) {
     currentGroup = [...currentGroup, task];
     return { ...acc, [task.status]: currentGroup };
   }, INITIAL_STATUS_GROUPS);
+
   return (
     <>
       <h2 className="text-5xl font-black my-10">Tareas</h2>
