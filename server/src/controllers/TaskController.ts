@@ -56,7 +56,7 @@ export class TaskController {
         response.status(404).json({ error: "Hubo un error" });
         return;
       }
-      response.json(task);
+      response.json({ message: "Tarea actualizada", data: task });
     } catch (error) {
       response.status(500).json({ error: "Hubo un error" });
     }

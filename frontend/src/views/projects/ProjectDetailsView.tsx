@@ -1,6 +1,7 @@
 import { getProjectById } from "@/api/projectApi";
 import Spinner from "@/components/Spinner";
 import AddTaskModal from "@/components/tasks/AddTaskModal";
+import EditTaskData from "@/components/tasks/EditTaskData";
 import TaskList from "@/components/tasks/TaskList";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -23,7 +24,6 @@ export default function ProjectDetailView() {
 
   if (isLoading) return <Spinner />;
   if (isError) return <Navigate to={"/404"} />;
-  console.log(data);
   if (data)
     return (
       <>
@@ -40,8 +40,9 @@ export default function ProjectDetailView() {
             Agregar Tarea
           </button>
         </nav>
-        <TaskList tasks={data.tasks}/>
+        <TaskList tasks={data.tasks} />
         <AddTaskModal projectId={projectId} />
+        <EditTaskData projectId={projectId} />
       </>
     );
 }
