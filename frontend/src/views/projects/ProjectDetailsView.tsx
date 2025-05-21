@@ -2,6 +2,7 @@ import { getProjectById } from "@/api/projectApi";
 import Spinner from "@/components/Spinner";
 import AddTaskModal from "@/components/tasks/AddTaskModal";
 import EditTaskData from "@/components/tasks/EditTaskData";
+import TaskDetailsModal from "@/components/tasks/TaskDetailsModal";
 import TaskList from "@/components/tasks/TaskList";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -43,6 +44,7 @@ export default function ProjectDetailView() {
         <TaskList tasks={data.tasks} />
         <AddTaskModal projectId={projectId} />
         <EditTaskData projectId={projectId} />
+        <TaskDetailsModal projectId={projectId} />
       </>
     );
 }

@@ -31,12 +31,12 @@ export class TaskController {
   static async getTask(request: Request, response: Response) {
     try {
       const { taskId } = request.params;
-      const task = await Task.findById(taskId).populate("project");
+      const task = await Task.findById(taskId);
       if (!task) {
         response.status(404).json({ error: "Hubo un error" });
         return;
       }
-      if (task.project.id !== request.project.id) {
+      if (task.project != request.project.id) {
         response.status(400).json({ error: "Accion no valida" });
         return;
       }
@@ -93,7 +93,7 @@ export class TaskController {
         response.status(404).json({ error: "Hubo un error" });
         return;
       }
-      response.send(`Tarea: ${task.name} actualizada as Estado:${status}`);
+      response.send(`Tarea: ${task.name} actualizada a Estado:${status}`);
     } catch (error) {
       response.status(500).json({ error: "Hubo un error" });
     }
