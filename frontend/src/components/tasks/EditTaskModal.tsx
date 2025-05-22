@@ -58,7 +58,7 @@ export default function EditTaskModal({
         className="relative z-10"
         onClose={() => {
           navigate(location.pathname, { replace: true });
-        }}
+        }}        
       >
         <TransitionChild
           as={Fragment}
