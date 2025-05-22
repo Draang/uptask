@@ -20,4 +20,5 @@ router.post(
   handleInputErrors,
   AuthController.createAccount
 );
+router.post('/confirm',body('token').notEmpty().withMessage("El token no puede ir vacio"),handleInputErrors,AuthController.confirmAccount)
 export default router;
