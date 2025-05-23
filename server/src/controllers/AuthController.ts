@@ -1,17 +1,11 @@
 import { Request, Response } from "express";
-import User from "../models/Auth";
-import { hashPassword } from "../utils/auth";
-import Token from "../models/Token";
+import User, { IUser } from "../models/Auth";
+import Token, { IToken } from "../models/Token";
+import { checkPassword, hashPassword } from "../utils/auth";
 import { generateToken } from "../utils/token";
-import { transporter } from "../config/nodemailer";
 import { AuthEmail } from "../emails/AuthEmail";
 
 export class AuthController {
-  /**
-   * // * Usuarios unicos
-   * // * Password hasheado
-   * // * Enlace de verificacion a E-Mail
-   */
   static async createAccount(req: Request, res: Response): Promise<void> {
     try {
       const { password, email } = req.body;
@@ -51,6 +45,41 @@ export class AuthController {
       user.confirmed = true;
       await Promise.allSettled([user.save(), tokenExist.deleteOne()]);
       res.send("La cuenta ha sido confirmada correctamente");
+    } catch (error) {
+      const codeError = error.cause ?? 500;
+      res.status(codeError).json({ error: error.message });
+    }
+  }
+  static async login(req: Request, res: Response): Promise<void> {
+    try {
+      const { password, email } = req.body;
+      const userExist = await User.findOne({ email });
+      if (!userExist) {
+        throw new Error(
+          "Usuario no encontrado revisa contraseña y email, puedes tener un error",
+          { cause: 404 }
+        );
+      }
+      if (!userExist.confirmed) {
+        const token = new Token();
+        token.token = generateToken();
+        token.user = userExist.id;
+        //send email
+        AuthEmail.sendConfirmationEmail(userExist.email, token.token);
+        await token.save();
+        throw new Error(
+          "La cuenta no ha sido confirmada, se ha enviado un email de confirmacion",
+          { cause: 401 }
+        );
+      }
+      const isPasswordRight = await checkPassword(password, userExist.password);
+      if (!isPasswordRight) {
+        throw new Error(
+          "Usuario no encontrado revisa contraseña y email, puedes tener un error",
+          { cause: 404 }
+        );
+      }
+      res.send("Autenticado!!");
     } catch (error) {
       const codeError = error.cause ?? 500;
       res.status(codeError).json({ error: error.message });
