@@ -29,6 +29,14 @@ router.post(
 router.post(
   "/login",
   body("email").isEmail().withMessage("El email no es valido"),
-  body("password").notEmpty().withMessage("El password no puede ir vacio"),handleInputErrors,AuthController.login
+  body("password").notEmpty().withMessage("El password no puede ir vacio"),
+  handleInputErrors,
+  AuthController.login
+);
+router.post(
+  "/request_code",
+  body("email").isEmail().withMessage("El email no es valido"),
+  handleInputErrors,
+  AuthController.requestToken
 );
 export default router;

@@ -85,4 +85,32 @@ export class AuthController {
       res.status(codeError).json({ error: error.message });
     }
   }
+  static async requestToken(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+      // Validar usuario unico
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error("El usuario no existe", { cause: 401 });
+      }
+      if (user.confirmed) {
+        throw new Error("El usuario ya esta confirmado", { cause: 403 });
+      }
+      // Generar token
+      const token = new Token();
+      token.token = generateToken();
+      token.user = user.id;
+
+      //send email
+      AuthEmail.sendConfirmationEmail(user.email, token.token);
+
+      //Save in db
+      await token.save();
+
+      res.send("Email enviado para confirmarla");
+    } catch (error) {
+      const codeError = error.cause ?? 500;
+      res.status(codeError).json({ error: error.message });
+    }
+  }
 }

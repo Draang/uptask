@@ -10,7 +10,7 @@ export class AuthEmail {
       html: `
       <p>Hola, has creado una cuenta en uptask , ya casi esta todo listo</p>
       <p>Visita el siguiente enlace para confirmar tu cuenta</p>
-      <a href="">Confirmar cuenta</a>
+      <a href="${process.env.FRONTEND_URL}/auth/confirm">Confirmar cuenta</a>
       <h2>Ingresa el siguiente token de confirmacion: </h2> 
 
       <h1><b>${token}</b></h1>
