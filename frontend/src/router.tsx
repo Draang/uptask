@@ -9,6 +9,8 @@ import LoginView from "./views/auth/LoginView";
 import RegisterView from "./views/auth/RegisterView";
 import ConfirmAccountView from "./views/auth/ConfirmAccountView";
 import RequestNewCodeView from "./views/auth/RequestNewCodeView";
+import ForgotPsswView from "./views/auth/ForgotPsswView";
+import NewPsswView from "./views/auth/NewPsswView";
 
 export default function Router() {
   return (
@@ -22,6 +24,8 @@ export default function Router() {
             path="/auth/request-new-code"
             element={<RequestNewCodeView />}
           />
+          <Route path="/auth/forgot-pssw" element={<ForgotPsswView />} />
+          <Route path="/auth/new-pssw" element={<NewPsswView />} />
         </Route>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Dashboard />} index />

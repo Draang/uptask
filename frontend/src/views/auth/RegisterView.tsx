@@ -136,6 +136,12 @@ export default function RegisterView() {
         >
           Ya tienes cuenta? Inicia sesion ahora
         </Link>
+        <Link
+          to={"/auth/forgot-pssw"}
+          className="text-center text-gray-300 font-normal"
+        >
+          Ya tienes cuenta y olvidaste tu contraseña? Restablecer
+        </Link>
       </nav>
     </>
   );

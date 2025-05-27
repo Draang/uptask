@@ -18,4 +18,21 @@ export class AuthEmail {
       `,
     });
   }
+  static async sendPsswResetToken(to: string, token: string) {
+    await transporter.sendMail({
+      from: "Uptask <admin@uptask.com>",
+      to: to,
+      subject: "UpTask - Restablece tu contraseña",
+      text: "UpTask - Restablece tu contraseña",
+      html: `
+      <p>Hola, has olvidado tu contraseña!!, sigue los siguientes pasos para restablecerla </p>
+      <p>Visita el siguiente enlace para confirmar tu cuenta</p>
+      <a href="${process.env.FRONTEND_URL}/auth/new-pssw">Restablece tu contraseña</a>
+      <h2>Ingresa el siguiente token de confirmacion: </h2> 
+
+      <h1><b>${token}</b></h1>
+      <p>Este token expira en 10 minutos</p>
+      `,
+    });
+  }
 }

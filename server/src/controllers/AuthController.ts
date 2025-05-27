@@ -113,4 +113,76 @@ export class AuthController {
       res.status(codeError).json({ error: error.message });
     }
   }
+  static async requestResetPssw(req: Request, res: Response): Promise<void> {
+    /**
+     * STEP 1:
+     *  TODO: Usuario existe
+     *  TODO: Send Token
+     */
+    try {
+      const { email } = req.body;
+      // Validar usuario unico
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error("El usuario no existe", { cause: 401 });
+      }
+      if (!user.confirmed) {
+        throw new Error("El usuario aun no esta confirmado", { cause: 403 });
+      }
+      // Generar token
+      const token = new Token();
+      token.token = generateToken();
+      token.user = user.id;
+      await token.save();
+
+      //send email
+      AuthEmail.sendPsswResetToken(user.email, token.token);
+
+      res.send("Revisa tu email para instrucciones");
+    } catch (error) {
+      const codeError = error.cause ?? 500;
+      res.status(codeError).json({ error: error.message });
+    }
+  }
+  /**
+   * STEP 2:
+   *  TODO: Validar Token
+   */
+  static async validateTokenPassword(
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const { token } = req.body;
+      const tokenExist = await Token.findOne({ token });
+      if (!tokenExist) {
+        throw new Error("Token no valido 1", { cause: 401 });
+      }
+      res.send("Token valido, define tu nueva contraseña");
+    } catch (error) {
+      const codeError = error.cause ?? 500;
+      res.status(codeError).json({ error: error.message });
+    }
+  }
+  /**
+   * STEP 3:
+   * TODO: Change password
+   */
+  static async updatePassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+      const tokenExist = await Token.findOne({ token });
+      if (!tokenExist) {
+        throw new Error("Token no valido", { cause: 401 });
+      }
+      const user = await User.findById(tokenExist.user);
+      user.password = await hashPassword(password);
+      await Promise.allSettled([user.save(), tokenExist.deleteOne()]);
+      res.send("La contraseña se actualizo correctamente");
+    } catch (error) {
+      const codeError = error.cause ?? 500;
+      res.status(codeError).json({ error: error.message });
+    }
+  }
 }
