@@ -4,6 +4,7 @@ import Token, { IToken } from "../models/Token";
 import { checkPassword, hashPassword } from "../utils/auth";
 import { generateToken } from "../utils/token";
 import { AuthEmail } from "../emails/AuthEmail";
+import { generateJWT } from "../utils/jwt";
 
 export class AuthController {
   static async createAccount(req: Request, res: Response): Promise<void> {
@@ -79,7 +80,8 @@ export class AuthController {
           { cause: 404 }
         );
       }
-      res.send("Autenticado!!");
+      const jwt = generateJWT({ id: userExist.id });
+      res.send(jwt);
     } catch (error) {
       const codeError = error.cause ?? 500;
       res.status(codeError).json({ error: error.message });
@@ -144,10 +146,6 @@ export class AuthController {
       res.status(codeError).json({ error: error.message });
     }
   }
-  /**
-   * STEP 2:
-   *  TODO: Validar Token
-   */
   static async validateTokenPassword(
     req: Request,
     res: Response
@@ -164,10 +162,6 @@ export class AuthController {
       res.status(codeError).json({ error: error.message });
     }
   }
-  /**
-   * STEP 3:
-   * TODO: Change password
-   */
   static async updatePassword(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;

@@ -9,6 +9,7 @@ Backend con
 - Validar usuarios 
     - mailtrap (test) 
     - resend.com (de verdad)
+- jwt - https://jwt.io/
 MVC (Modelo Vista Controlador)
 Ventajas:
 
