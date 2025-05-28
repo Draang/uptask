@@ -7,7 +7,7 @@ type UserPayload = {
 export function generateJWT(user: UserPayload) {
   // En data solo se agrega lo minimo del usuario para hacerlo distinctivo
   const token = jwt.sign(user, process.env.JWT_SECRET, {
-    expiresIn: "6m",
+    expiresIn: "180m",
   });
   return token;
 }
