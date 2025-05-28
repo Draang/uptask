@@ -20,8 +20,9 @@ export default function LoginView() {
     onError: (error) => {
       toast(error.message, { type: "error" });
     },
-    onSuccess: (data) => {
-      toast(data, { type: "success" });
+    onSuccess: () => {
+      toast("Autenticado correctamente", { type: "success" });
+
     },
   });
   const handleLogin = (formData: UserLoginForm) => {

@@ -43,6 +43,15 @@ export async function requestConfirmationCode(
 export async function login(formData: UserLoginForm) {
   try {
     const { data } = await api.post<string>("/auth/login", formData);
+    /**  * localstorage
+     *    ? [no requiere config, persistente, permanece en navegador]
+     *     ! [vunerable en xss, 5 a 10 mb, no CORS]
+     *  * session storage
+     *  * cookies
+     *     ? [Seguro, soporte para cors, controlar expiracion]
+     *     ! [sobrecarga de red, capacidad limitada 4kb, pueden ser eliminadas por usuario]
+     */
+    localStorage.setItem("AUTH_TOKEN", data);
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
