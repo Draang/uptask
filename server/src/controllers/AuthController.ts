@@ -179,4 +179,7 @@ export class AuthController {
       res.status(codeError).json({ error: error.message });
     }
   }
+  static user(req: Request, res: Response) {
+    res.json(req.user);
+  }
 }

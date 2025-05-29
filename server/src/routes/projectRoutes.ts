@@ -7,10 +7,9 @@ import { validateProjectExist } from "../middleware/project";
 import { taskStatus } from "../models/Task";
 import { authenticate } from "../middleware/auth";
 const router = Router();
-
+router.use(authenticate);
 router.post(
   "/",
-  authenticate,
   body("projectName")
     .notEmpty()
     .withMessage("El Nombre del Projecto es obligatorio"),
@@ -23,7 +22,7 @@ router.post(
   handleInputErrors,
   ProjectController.createProject
 );
-router.get("/", ProjectController.getAllProjects);
+router.get("/", handleInputErrors, ProjectController.getAllProjects);
 router.get(
   "/:id",
   param("id").isMongoId().withMessage("ID no valido"),

@@ -15,7 +15,13 @@ export class ProjectController {
   }
   static async getAllProjects(request: Request, response: Response) {
     try {
-      const projects = await Project.find({});
+      const projects = await Project.find({
+        $or: [
+          {
+            manager: { $in: request.user.id },
+          },
+        ],
+      });
       response.json(projects);
     } catch (error) {
       response.status(500).json({ error: error.message });
@@ -24,7 +30,10 @@ export class ProjectController {
   static async getProjectById(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const project = await Project.findById(id).populate("tasks");
+      const project = await Project.findOne({
+        _id: id,
+        manager: request.user.id,
+      }).populate("tasks");
       if (!project) {
         response.status(404).json({ error: "Proyecto no encontrado" });
         return;
@@ -37,7 +46,14 @@ export class ProjectController {
   static async updateProject(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const project = await Project.findByIdAndUpdate(id, request.body);
+
+      const project = await Project.findOneAndUpdate(
+        {
+          _id: id,
+          manager: request.user.id,
+        },
+        request.body
+      );
       if (!project) {
         response.status(404).json({ error: "Proyecto no encontrado" });
         return;
@@ -51,7 +67,10 @@ export class ProjectController {
   static async deleteProject(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const project = await Project.findByIdAndDelete(id);
+      const project = await Project.findOneAndDelete({
+        _id: id,
+        manager: request.user.id,
+      });
       if (!project) {
         response.status(404).json({ error: "Proyecto no encontrado" });
       }
