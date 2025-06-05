@@ -55,7 +55,7 @@ export default function TaskDetailsModal({ projectId }: TaskDetailsModalProps) {
   };
   if (isError) {
     toast.error("Error buscando proyecto", { toastId: "error" });
-    return <Navigate to={`/proyects/${projectId}/details`} />;
+    return <Navigate to={`/proyects/${projectId}`} />;
   }
   if (data)
     return (

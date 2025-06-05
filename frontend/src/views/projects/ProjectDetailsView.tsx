@@ -6,6 +6,7 @@ import TaskDetailsModal from "@/components/tasks/TaskDetailsModal";
 import TaskList from "@/components/tasks/TaskList";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Link,
   Navigate,
   useLocation,
   useNavigate,
@@ -38,8 +39,14 @@ export default function ProjectDetailView() {
             className="bg-purple-400 hover:bg-purple-500 px-10 py-3 text-white cursor-pointer font-bold transition-colors"
             onClick={() => navigate(location.pathname + "?newTask=true")}
           >
-            Agregar Tarea
+            Agregar Colaboradores
           </button>
+          <Link
+            to={"team"}
+            className="bg-fuchsia-600 hover:bg-fuchsia-700 px-10 py-3 text-white cursor-pointer font-bold transition-colors"
+          >
+            Colaboradores
+          </Link>
         </nav>
         <TaskList tasks={data.tasks} />
         <AddTaskModal projectId={projectId} />
