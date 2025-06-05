@@ -23,6 +23,7 @@ export default function SearchResult({ user, reset }: SearchResultProps) {
         type: "success",
       });
       reset();
+      
     },
   });
   return (

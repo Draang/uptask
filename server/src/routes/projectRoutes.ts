@@ -117,8 +117,8 @@ router.post(
   TeamController.addMemberById
 );
 router.delete(
-  "/:projectId/team",
-  body("id").isMongoId().withMessage("Id no valido"),
+  "/:projectId/team/:userId",
+  param("userId").isMongoId().withMessage("Id no valido"),
   handleInputErrors,
   TeamController.removeMemberById
 );

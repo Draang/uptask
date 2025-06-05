@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { TeamMemberForm } from "@/types/index";
 import ErrorMessage from "@/components/ErrorMsg";
 import { findUserByEmail } from "@/api/teamApi";
@@ -14,14 +14,13 @@ export default function AddMemberForm() {
   };
   const params = useParams();
   const projectId = params.projectId!;
-
+  const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm({ defaultValues: initialValues });
-
   const mutation = useMutation({
     mutationFn: findUserByEmail,
     onError: (error) => {
@@ -44,6 +43,7 @@ export default function AddMemberForm() {
     reset();
 
     mutation.reset();
+    queryClient.invalidateQueries({ queryKey: ["projectTeam", projectId] });
   };
   return (
     <>
@@ -83,7 +83,9 @@ export default function AddMemberForm() {
         {mutation.error && (
           <h1 className="text-center">{mutation.error.message}</h1>
         )}
-        {mutation.data && <SearchResult user={mutation.data} reset={resetData}/>}
+        {mutation.data && (
+          <SearchResult user={mutation.data} reset={resetData} />
+        )}
       </div>
     </>
   );
