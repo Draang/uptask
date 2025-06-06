@@ -20,6 +20,7 @@ export class ProjectController {
           {
             manager: { $in: request.user.id },
           },
+          { team: { $in: request.user.id } },
         ],
       });
       response.json(projects);
@@ -32,7 +33,12 @@ export class ProjectController {
       const { id } = request.params;
       const project = await Project.findOne({
         _id: id,
-        manager: request.user.id,
+        $or: [
+          {
+            manager: { $in: request.user.id },
+          },
+          { team: { $in: request.user.id } },
+        ],
       }).populate("tasks");
       if (!project) {
         response.status(404).json({ error: "Proyecto no encontrado" });
@@ -63,7 +69,6 @@ export class ProjectController {
       response.status(500).json({ error: error.message });
     }
   }
-
   static async deleteProject(request: Request, response: Response) {
     try {
       const { id } = request.params;
