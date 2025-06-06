@@ -7,6 +7,7 @@ import TaskList from "@/components/tasks/TaskList";
 import { useAuth } from "@/hooks/useAuth";
 import { isManager } from "@/utils/policies";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import {
   Link,
   Navigate,
@@ -27,6 +28,7 @@ export default function ProjectDetailView() {
     retry: false,
   });
 
+  const canEdit = useMemo(() => data?.manager === user?._id, [data, user]);
   if (isLoading || isAuthLoading) return <Spinner />;
   if (isError) return <Navigate to={"/404"} />;
   if (data && user)
@@ -53,7 +55,7 @@ export default function ProjectDetailView() {
             </Link>
           </nav>
         )}
-        <TaskList tasks={data.tasks} />
+        <TaskList tasks={data.tasks} canEdit={canEdit} />
         <AddTaskModal projectId={projectId} />
         <EditTaskData projectId={projectId} />
         <TaskDetailsModal projectId={projectId} />

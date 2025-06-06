@@ -2,9 +2,9 @@ import type { Task } from "@/types/index";
 import TaskCard from "./TaskCard";
 import { STATUS_TRANSLATIONS, STATUS_TRANSLATIONS_COLORS } from "@/locals/es";
 
-
 type TaskListProps = {
   tasks: Task[];
+  canEdit: boolean;
 };
 type GroupTask = {
   [k: string]: Task[];
@@ -17,7 +17,7 @@ const INITIAL_STATUS_GROUPS: GroupTask = {
   inReview: [],
   completed: [],
 };
-export default function TaskList({ tasks }: TaskListProps) {
+export default function TaskList({ tasks, canEdit }: TaskListProps) {
   const groupedTasks = tasks.reduce((acc, task) => {
     let currentGroup = acc[task.status] ? [...acc[task.status]] : [];
     currentGroup = [...currentGroup, task];
@@ -30,7 +30,10 @@ export default function TaskList({ tasks }: TaskListProps) {
 
       <div className="flex gap-5 overflow-x-scroll 2xl:overflow-auto pb-32">
         {Object.entries(groupedTasks).map(([status, tasks]) => (
-          <div key={status} className="min-w-[300px] 2xl:min-w-0 2xl:w-1/5 bg-slate-200">
+          <div
+            key={status}
+            className="min-w-[300px] 2xl:min-w-0 2xl:w-1/5 bg-slate-200"
+          >
             <h3
               className={`capitalize text-xl border border-slate-300 bg-white p-3 border-t-8 ${STATUS_TRANSLATIONS_COLORS[status]}`}
             >
@@ -42,7 +45,7 @@ export default function TaskList({ tasks }: TaskListProps) {
                   No Hay tareas
                 </li>
               ) : (
-                tasks.map((task) => <TaskCard key={task._id} task={task} />)
+                tasks.map((task) => <TaskCard key={task._id} task={task} canEdit={canEdit}/>)
               )}
             </ul>
           </div>
