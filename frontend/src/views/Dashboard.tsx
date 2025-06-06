@@ -13,8 +13,11 @@ import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { deleteProject, getProjects } from "@/api/projectApi";
 import Spinner from "@/components/Spinner";
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/useAuth";
+import { isManager } from "@/utils/policies";
 
 export default function Dashboard() {
+  const { data: user, isLoading: isAuthLoading } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects,
@@ -48,9 +51,9 @@ export default function Dashboard() {
           Nuevo proyecto
         </Link>
       </nav>
-      {isLoading ? (
+      {isLoading || isAuthLoading ? (
         <Spinner />
-      ) : data?.length ? (
+      ) : data && user ? (
         <ul
           role="list"
           className="divide-y divide-gray-100 border border-gray-100 mt-10 bg-white shadow-lg"
@@ -62,6 +65,17 @@ export default function Dashboard() {
             >
               <div className="flex min-w-0 gap-x-4">
                 <div className="min-w-0 flex-auto space-y-2">
+                  <div>
+                    {isManager(project.manager, user._id) ? (
+                      <p className="text-xs font-bold uppercase bg-indigo-50 text-indigo-500 rounded-lg border-indigo-500 inline-block py-1 px-5">
+                        Manager
+                      </p>
+                    ) : (
+                      <p className="text-xs font-bold uppercase bg-green-50 text-green-500 rounded-lg border border-green-500 inline-block py-1 px-5">
+                        Colaborador
+                      </p>
+                    )}
+                  </div>
                   <Link
                     to={`/proyects/${project._id}`}
                     className="text-gray-600 cursor-pointer hover:underline text-3xl font-bold"
@@ -101,23 +115,27 @@ export default function Dashboard() {
                           Ver Proyecto
                         </Link>
                       </MenuItem>
-                      <MenuItem>
-                        <Link
-                          to={`/proyects/${project._id}/edit`}
-                          className="block px-3 py-1 text-sm leading-6 text-gray-900"
-                        >
-                          Editar Proyecto
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <button
-                          type="button"
-                          className="block px-3 py-1 text-sm leading-6 text-red-500"
-                          onClick={() => mutation.mutate(project._id)}
-                        >
-                          Eliminar Proyecto
-                        </button>
-                      </MenuItem>
+                      {isManager(project.manager, user._id) && (
+                        <>
+                          <MenuItem>
+                            <Link
+                              to={`/proyects/${project._id}/edit`}
+                              className="block px-3 py-1 text-sm leading-6 text-gray-900"
+                            >
+                              Editar Proyecto
+                            </Link>
+                          </MenuItem>
+                          <MenuItem>
+                            <button
+                              type="button"
+                              className="block px-3 py-1 text-sm leading-6 text-red-500"
+                              onClick={() => mutation.mutate(project._id)}
+                            >
+                              Eliminar Proyecto
+                            </button>
+                          </MenuItem>
+                        </>
+                      )}
                     </MenuItems>
                   </Transition>
                 </Menu>
