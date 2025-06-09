@@ -30,19 +30,16 @@ export class TaskController {
   }
   static async getTask(request: Request, response: Response) {
     try {
-      const { taskId } = request.params;
-      const task = await Task.findById(taskId).populate({
-        path: "updatedBy",
-        select: "name email",
-      });
-      if (!task) {
-        response.status(404).json({ error: "Hubo un error" });
-        return;
-      }
-      if (task.project != request.project.id) {
-        response.status(400).json({ error: "Accion no valida" });
-        return;
-      }
+      const task = await request.task.populate([
+        {
+          path: "notes",
+          populate: { path: "createdBy", select: "id name email" },
+        },
+        {
+          path: "updatedBy",
+          select: "name email",
+        },
+      ]);
       response.json(task);
     } catch (error) {
       response.status(500).json({ error: "Hubo un error" });
@@ -50,15 +47,7 @@ export class TaskController {
   }
   static async updateTask(request: Request, response: Response) {
     try {
-      const { taskId } = request.params;
-      const task = await Task.findOneAndUpdate(
-        { _id: taskId, project: request.project.id },
-        request.body
-      );
-      if (!task) {
-        response.status(404).json({ error: "Hubo un error" });
-        return;
-      }
+      const task = await request.task.updateOne({}, { $set: request.body });
       response.json({ message: "Tarea actualizada", data: task });
     } catch (error) {
       response.status(500).json({ error: "Hubo un error" });
@@ -87,15 +76,11 @@ export class TaskController {
   static async updateTaskStatus(request: Request, response: Response) {
     try {
       const { status } = request.body;
-      const { taskId } = request.params;
-      const task = await Task.findOneAndUpdate(
-        { _id: taskId, project: request.project.id },
-        { status, updatedBy: request.user.id }
+
+      const task = await request.task.updateOne(
+        {},
+        { $set: { status, updatedBy: request.user.id } }
       );
-      if (!task) {
-        response.status(404).json({ error: "Hubo un error" });
-        return;
-      }
       response.send(`Tarea: ${task.name} actualizada a Estado:${status}`);
     } catch (error) {
       response.status(500).json({ error: "Hubo un error" });

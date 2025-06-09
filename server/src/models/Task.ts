@@ -13,6 +13,7 @@ export interface ITask extends Document {
   project: Types.ObjectId;
   status: TaskStatus;
   updatedBy: Types.ObjectId;
+  notes: Types.ObjectId[];
 }
 
 const TaskSchema: Schema = new Schema(
@@ -33,6 +34,10 @@ const TaskSchema: Schema = new Schema(
       type: Types.ObjectId,
       ref: "User",
       default: null,
+    },
+    notes: {
+      type: Types.ObjectId,
+      ref: "Note",
     },
   },
   { timestamps: true }
