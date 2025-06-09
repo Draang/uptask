@@ -31,7 +31,10 @@ export class TaskController {
   static async getTask(request: Request, response: Response) {
     try {
       const { taskId } = request.params;
-      const task = await Task.findById(taskId);
+      const task = await Task.findById(taskId).populate({
+        path: "updatedBy",
+        select: "name email",
+      });
       if (!task) {
         response.status(404).json({ error: "Hubo un error" });
         return;

@@ -98,6 +98,12 @@ export default function TaskDetailsModal({ projectId }: TaskDetailsModalProps) {
                     <p className="text-sm text-slate-400">
                       Última actualización: {formatDate(data.updatedAt)}
                     </p>
+                    {data.updatedBy && (
+                      <p className="text-slate-400 text-sm">
+                        Ultima actualizacion de estado por:{" "}
+                        {data.updatedBy.name}
+                      </p>
+                    )}
                     <DialogTitle
                       as="h3"
                       className="font-black text-4xl text-slate-600 my-5"

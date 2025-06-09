@@ -31,11 +31,10 @@ export async function getTaskById({
 }) {
   try {
     const { data } = await api.get(`/projects/${projectId}/tasks/${taskId}`);
-    
     const res = taskSchema.safeParse(data);
- if(res.success){
-    return res.data;}
-    else throw new Error("Error consultando tarea");
+    if (res.success) {
+      return res.data;
+    } else throw new Error("Error consultando tarea");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error);
