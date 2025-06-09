@@ -31,6 +31,7 @@ const ProjectSchema: Schema = new Schema(
         ref: "User",
       },
     ],
+  
   },
   { timestamps: true }
 );

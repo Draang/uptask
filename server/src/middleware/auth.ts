@@ -18,8 +18,8 @@ export async function authenticate(
     const error = new Error("No autorizado");
     res.status(401).json({ error: error.message });
   }
-  const token = bearer.split(" ")[1];
   try {
+    const token = bearer.split(" ")[1];
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     if (typeof decode === "object" && decode.id) {
       const user = await User.findById(decode.id).select("_id name email");

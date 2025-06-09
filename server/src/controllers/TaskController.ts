@@ -87,7 +87,7 @@ export class TaskController {
       const { taskId } = request.params;
       const task = await Task.findOneAndUpdate(
         { _id: taskId, project: request.project.id },
-        { status }
+        { status, updatedBy: request.user.id }
       );
       if (!task) {
         response.status(404).json({ error: "Hubo un error" });
