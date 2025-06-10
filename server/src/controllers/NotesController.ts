@@ -17,7 +17,7 @@ export class NotesController {
       await Promise.allSettled([note.save(), req.task.save()]);
       res.send("Nota creada correctamente");
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.status(500).json({ error: "Hubo un error" });
     }
   }
@@ -35,7 +35,7 @@ export class NotesController {
   static async deleteNote(req: Request<NoteParams>, res: Response) {
     try {
       const notes = await Note.findOneAndDelete({
-        id: req.params.noteId,
+        _id: req.params.noteId,
         createdBy: req.user.id,
         task: req.task.id,
       });

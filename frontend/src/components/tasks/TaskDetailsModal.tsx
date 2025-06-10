@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { formatDate } from "@/utils/index";
 import { STATUS_TRANSLATIONS } from "@/locals/es";
 import type { TaskStatus } from "@/types/index";
+import NotesPanel from "../notes/NotesPanel";
 type TaskDetailsModalProps = {
   projectId: string;
 };
@@ -133,6 +134,7 @@ export default function TaskDetailsModal({ projectId }: TaskDetailsModalProps) {
                         )}
                       </select>
                     </div>
+                    <NotesPanel notes={data.notes} />
                   </DialogPanel>
                 </TransitionChild>
               </div>

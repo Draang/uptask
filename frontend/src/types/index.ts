@@ -30,8 +30,20 @@ export const userSchema = authSchema
   });
 export type User = z.infer<typeof userSchema>;
 
-/// TASK
 
+// Notes
+export const noteSchema = z.object({
+  _id: z.string(),
+  content: z.string(),
+  createdBy: userSchema,
+  task: z.string(),
+  createdAt: z.string(),
+});
+export type Note = z.infer<typeof noteSchema>;
+export type NoteFormData = Pick<Note, "content">;
+
+
+/// TASK
 const taskStatusSchema = z.enum([
   "pending",
   "onHold",
@@ -48,10 +60,12 @@ export const taskSchema = z.object({
   status: taskStatusSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
-  updatedBy: userSchema,
+  updatedBy: z.nullable(userSchema),
+  notes: z.array(noteSchema),
 });
 export type Task = z.infer<typeof taskSchema>;
 export type TaskFormData = Pick<Task, "name" | "description">;
+
 
 /** Projects */
 export const projectSchema = z.object({
@@ -59,11 +73,7 @@ export const projectSchema = z.object({
   projectName: z.string(),
   clientName: z.string(),
   description: z.string(),
-  tasks: z.array(
-    taskSchema.omit({
-      updatedBy:true
-    })
-  ),
+  tasks: z.array(taskSchema.omit({ notes: true, updatedBy: true })),
   manager: z.string(userSchema.pick({ _id: true })),
 });
 
@@ -83,8 +93,8 @@ export const dashboardProjectSchema = z.array(
   })
 );
 
-/// TEAM
 
+/// TEAM
 export const teamMemberSchema = userSchema.pick({
   name: true,
   email: true,

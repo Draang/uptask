@@ -39,7 +39,10 @@ export class ProjectController {
           },
           { team: { $in: request.user.id } },
         ],
-      }).populate("tasks");
+      }).populate({
+        path: "tasks",
+        select: "_id name description project status createdAt updatedAt",
+      });
       if (!project) {
         response.status(404).json({ error: "Proyecto no encontrado" });
         return;
