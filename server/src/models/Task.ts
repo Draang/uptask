@@ -35,10 +35,10 @@ const TaskSchema: Schema = new Schema(
       ref: "User",
       default: null,
     },
-    notes: {
+    notes:[ {
       type: Types.ObjectId,
       ref: "Note",
-    },
+    }],
   },
   { timestamps: true }
 );

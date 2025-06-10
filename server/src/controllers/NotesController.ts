@@ -17,6 +17,7 @@ export class NotesController {
       await Promise.allSettled([note.save(), req.task.save()]);
       res.send("Nota creada correctamente");
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: "Hubo un error" });
     }
   }

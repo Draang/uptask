@@ -1,16 +1,21 @@
 import type { NextFunction, Request, Response } from "express";
-import Task from "../models/Task";
+import Task, { ITask } from "../models/Task";
 import { ValidationChain } from "express-validator";
 
 export class TaskController {
-  static async createTask(request: Request, response: Response) {
+  static async createTask(request: Request<{}, {}, ITask>, response: Response) {
     try {
-      const task = new Task({
-        ...request.body,
-        project: request.project.id,
-      });
+      const task = new Task();
+      const { name, description } = request.body;
+      task.name = name;
+      task.description = description;
+      task.project = request.project.id;
       request.project.tasks.push(task.id);
-      await Promise.allSettled([task.save(), request.project.save()]);
+      const reses = await Promise.allSettled([
+        task.save(),
+        request.project.save(),
+      ]);
+      console.log(reses);
       response.json({ message: "Tarea creada", data: task });
     } catch (error) {
       console.error(error);
