@@ -219,4 +219,19 @@ export class AuthController {
       res.status(code).json({ error: error.message });
     }
   }
+  static async checkPassword(req: Request, res: Response) {
+    try {
+      const { password } = req.body;
+      const user = await User.findById(req.user.id);
+      const isPasswordCorrect = await checkPassword(password, user.password);
+      if (!isPasswordCorrect) {
+        throw new Error("La contraseña no es correcta", { cause: 401 });
+      }
+      res.send("Contraseña correcta");
+    } catch (error) {
+      const code = error?.cause ? error?.cause : 500;
+
+      res.status(code).json({ error: error.message });
+    }
+  }
 }

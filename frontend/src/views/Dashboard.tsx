@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Fragment } from "react";
 import {
@@ -10,11 +10,11 @@ import {
   Transition,
 } from "@headlessui/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
-import { deleteProject, getProjects } from "@/api/projectApi";
+import { getProjects } from "@/api/projectApi";
 import Spinner from "@/components/Spinner";
-import { toast } from "react-toastify";
 import { useAuth } from "@/hooks/useAuth";
 import { isManager } from "@/utils/policies";
+import ConfirmModal from "@/components/projects/ConfirmModal";
 
 export default function Dashboard() {
   const { data: user, isLoading: isAuthLoading } = useAuth();
@@ -22,21 +22,8 @@ export default function Dashboard() {
     queryKey: ["projects"],
     queryFn: getProjects,
   });
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: deleteProject,
-    onError: (error) => {
-      toast(error.message, {
-        type: "error",
-      });
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-      toast(data, {
-        type: "success",
-      });
-    },
-  });
+
+  const navigate = useNavigate();
   return (
     <>
       <h1 className="text-5xl font-black">Mis Proyectos</h1>
@@ -129,7 +116,12 @@ export default function Dashboard() {
                             <button
                               type="button"
                               className="block px-3 py-1 text-sm leading-6 text-red-500"
-                              onClick={() => mutation.mutate(project._id)}
+                              onClick={() =>
+                                navigate(
+                                  location.pathname +
+                                    `?deleteProject=${project._id}`
+                                )
+                              }
                             >
                               Eliminar Proyecto
                             </button>
@@ -151,6 +143,7 @@ export default function Dashboard() {
           </Link>
         </p>
       )}
+      <ConfirmModal />
     </>
   );
 }
